@@ -1,6 +1,39 @@
-import React from 'react'
+import React from "react";
+import axios from "axios";
+import { useState } from 'react';
+import {useNavigate , Link} from "react-router-dom";
+
 
 const Signup = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
+
+  const addUser = async (e) => {
+    e.preventDefault();
+    try {
+      if (password !== confirmPassword) {
+        return;
+      }
+      console.log(name);
+      const response = await axios.post("http://localhost:", {
+        name,
+        email,
+        password,
+      });
+      if (response.status === 201) {
+        localStorage.setItem("id", response.data._id);
+        navigate("/home");
+      }
+    } catch (err) {
+      console.log(err);
+      setError(true);
+    }
+  };
+
   return ( 
     <div class="bg-gray-700">
     <div class="m-auto xl:container px-12 sm:px-0 mx-auto">
@@ -56,23 +89,23 @@ const Signup = () => {
         <form action="" class="mt-10 space-y-8 dark:text-white">
         <div>
             <div class="relative before:absolute before:bottom-0 before:h-0.5 before:left-0 before:origin-right focus-within:before:origin-left before:right-0 before:scale-x-0 before:m-auto before:bg-sky-400 dark:before:bg-sky-800 focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 before:transition before:duration-300">
-              <input id="" type="name" placeholder="Enter your name" class="w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-600 outline-none  invalid:border-red-400 transition"/>
+              <input id="" type="name" placeholder="Enter your name" class="w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-600 outline-none  invalid:border-red-400 transition" value={name} onChange={(e) =>setName(e.target.value)}/>
             </div>
           </div>
           <div>
             <div class="relative before:absolute before:bottom-0 before:h-0.5 before:left-0 before:origin-right focus-within:before:origin-left before:right-0 before:scale-x-0 before:m-auto before:bg-sky-400 dark:before:bg-sky-800 focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 before:transition before:duration-300">
-              <input id="" type="email" placeholder="Enetr your email" class="w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-600 outline-none  invalid:border-red-400 transition"/>
+              <input id="" type="email" placeholder="Enetr your email" class="w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-600 outline-none  invalid:border-red-400 transition" value={email} onChange={(e) =>setEmail(e.target.value)}/>
             </div>
           </div>
           <div>
             <div class="relative before:absolute before:bottom-0 before:h-0.5 before:left-0 before:origin-right focus-within:before:origin-left before:right-0 before:scale-x-0 before:m-auto before:bg-sky-400 dark:before:bg-sky-800 focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 before:transition before:duration-300">
-              <input id="" type="Your password" placeholder="Enter your password" class="w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-600 outline-none  invalid:border-red-400 transition"/>
+              <input id="" type=" password" placeholder="Enter your password" class="w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-600 outline-none  invalid:border-red-400 transition"  value={password} onChange={(e) =>setPassword(e.target.value)}/>
             </div>
           </div>
   
           <div class="flex flex-col items-end">
             <div class="w-full relative before:absolute before:bottom-0 before:h-0.5 before:left-0 before:origin-right focus-within:before:origin-left before:right-0 before:scale-x-0 before:m-auto before:bg-sky-400 dark:before:bg-sky-800 focus-within:before:!scale-x-100 focus-within:invalid:before:bg-red-400 before:transition before:duration-300">
-              <input id="" type="Your password" placeholder="Confirm your password" class="w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-600 outline-none  invalid:border-red-400 transition"/>
+              <input id="" type="password" placeholder="Confirm your password" class="w-full bg-transparent pb-3  border-b border-gray-300 dark:placeholder-gray-300 dark:border-gray-600 outline-none  invalid:border-red-400 transition"  value={confirmPassword} onChange={(e) =>setConfirmPassword(e.target.value)}/>
             </div>
             
             <button type="reset" class="-mr-3 w-max p-3">
@@ -82,15 +115,15 @@ const Signup = () => {
   
           <div>
             <button
-              class="w-full rounded-full bg-sky-500 dark:bg-sky-400 h-11 flex items-center justify-center px-6 py-3 transition hover:bg-sky-600 focus:bg-sky-600 active:bg-sky-800"
+              class="w-full rounded-full bg-sky-500 dark:bg-sky-400 h-11 flex items-center justify-center px-6 py-3 transition hover:bg-sky-600 focus:bg-sky-600 active:bg-sky-800" 
             >
-              <span class="text-base font-semibold text-white dark:text-gray-900">Register</span>
+              <span class="text-base font-semibold text-white dark:text-gray-900" type="submit" onClick={(e)=> addUser(e)}>Register</span>
             </button>
-            <button href="#" type="reset" class="-ml-3 w-max p-3">
-              <span class="text-sm tracking-wide text-sky-600 dark:text-sky-400">Login</span>
-            </button>
+           <Link to="/login"><button class="text-sm hover:text-sky-900 dark:hover:text-gray-300">Login </button></Link>
           </div>
+          {error ? <p style={{color:"red"}}>User already Exist</p>:""}
         </form>
+       
       </div>
         <div class="border-t pt-12 text-gray-500 dark:border-gray-800">
           <div class="space-x-4 text-center">
